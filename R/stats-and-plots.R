@@ -11,6 +11,8 @@ stats_per_day_toplot <- pivot_longer(stats_per_day
                                      , names_to = "metric"
                                      , values_to = "value")
 
+#TODO: Both plots on the same scale?
+
 stats_plot <- ggplot(data=stats_per_day_toplot %>% filter(metric != 'revenue'), aes(x=Date)) +
   geom_line(aes(y=value, color=metric)) +
   xlab('Date') +
@@ -32,5 +34,7 @@ print(revenue_plot)
 # Trend: growth + revenue per users mechanically goes down bc newer users spend less
 # 
 
+#TODO: Metrics per age group to show why the main difference for the summer 
 
-#TODO : Is the effect visible in cohorts???
+#TODO : Is the effect visible in cohorts? (To be clear, not in retention since nothing is generated for
+# retention, but in revenue per user)
