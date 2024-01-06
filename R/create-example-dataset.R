@@ -85,6 +85,7 @@ users_dimension_df <- users_dimension_df %>%
 # 268-276 (Winter holidays) - Visits UP group 1, DOWN rest, revenue UP all
 # 450-500 (Ship underperforming new feature) - revenue DOWN all
 # 457-500 (Summer, age group 1) - Visits UP group 1
+# 461-464 (July 4) - Visits DOWN all
 library(foreach)
 
 visits_fact_df <- foreach(current_day = 1:N_DAYS, .combine = rbind) %do% {
@@ -107,6 +108,10 @@ visits_fact_df <- foreach(current_day = 1:N_DAYS, .combine = rbind) %do% {
   
   if(current_day >= 457) {
     current_p_vec[which(eligible_users$age_group == 1)] <- current_p_vec[which(eligible_users$age_group == 1)] * 1.5
+  }
+  
+  if(current_day >= 461 && current_day <= 464) {
+    current_p_vec <- current_p_vec*0.5
   }
   
   cbind(current_day,eligible_users %>% filter(
