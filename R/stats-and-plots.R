@@ -1,12 +1,16 @@
 library(tidyverse)
-visits_fact_df <- readRDS("data/visits_fact_df.rds")
+# visits_fact_df <- readRDS("data/visits_fact_df.rds")
 
 # Compute stats and plots to check properties
 stats_per_day <- visits_fact_df %>% 
   group_by(Date) %>% 
   summarise(visits = n(), revenue = sum(daily_spend_mu), revenue_per_user = sum(daily_spend_mu)/n())
 
-stats_per_day_toplot <- pivot_longer(stats_per_day 
+# Plot weighted or non weighted
+# df_for_plot <- stats_per_day
+df_for_plot <- stats_per_day_weighted
+
+stats_per_day_toplot <- pivot_longer(df_for_plot
                                      , cols = c(visits, revenue, revenue_per_user)
                                      , names_to = "metric"
                                      , values_to = "value")
@@ -18,7 +22,7 @@ stats_plot <- ggplot(data=stats_per_day_toplot %>% filter(metric != 'revenue'), 
   xlab('Date') +
   ylab('Metrics') +
   ggtitle('Metrics for the example dataset') +
-  scale_color_manual(values = c('visits' = 'darkgrey', 'revenue_per_user' = 'skyblue')) +
+  scale_color_manual(values = c('visits' = 'lightgrey', 'revenue_per_user' = 'blue')) +
   NULL
 print(stats_plot)
 
