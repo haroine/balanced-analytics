@@ -80,9 +80,7 @@ users_dimension_df <- rbind(old_users_dimension_df, new_users_dimension_df) %>%
   mutate(first_visit_date = as.numeric(first_visit_date)) %>% 
   arrange(first_visit_date)
 
-# TODO: Fill probabilities for users
-
-
+# Fill probabilities for users
 
 users_dimension_df <- users_dimension_df %>% 
   mutate(daily_visit_p = daily_visit_p_base *
@@ -149,6 +147,12 @@ visits_fact_df <- visits_fact_df %>%
     , TRUE ~ daily_spend_mu
   ))
 
+visits_fact_df$Date <- DATE_START + visits_fact_df$day - 1
+
+# saveRDS(visits_fact_df, file="data/visits_fact_df.rds")
+
+
+# Compute stats and plots to check properties
 stats_per_day <- visits_fact_df %>% 
   group_by(day) %>% 
   summarise(visits = n(), revenue = sum(daily_spend_mu), revenue_per_user = sum(daily_spend_mu)/n())
@@ -164,10 +168,6 @@ print(stats_plot)
 # Trend: growth + revenue per users mechanically goes down bc newer users spend less
 # 
 
-# colMeans(
-# matrix(rbinom(7*1000,1,TABLE_HOUSEHOLD_SIZE), ncol=7, byrow=T)
-# )
 
-## TODO: Is it visible in cohorts???
+#TODO : Is the effect visible in cohorts???
 
-# saveRDS(visits_fact_df, file="data/visits_fact_df.rds")
