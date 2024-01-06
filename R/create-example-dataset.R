@@ -6,36 +6,17 @@ source('R/functs-generate-dataset.R')
 # Final dataset:
 # all visits, with info
 # date, user_id, purchase_amount, age_group, sex, first_visit_date, household_size
-# Metrics: total revenue, *revenue per user*
-
-# To generate
+# Metrics: total revenue, revenue per user
 # False concerning slump during the summer (more young people who spend less), which is purely mechanical
-# - more proportionally young (and else?) visits during the summer 
-# True decline in the last 3 months which is masked by the fact it affects more ppl who spend 
+# - more proportionally young visits during the summer 
+# True decline in the last months which is masked by the fact it affects more ppl who spend 
 # less (new spenders, youngs) + normal vacations
 
-DATE_START <- as.Date('2023-04-01')
-N_DAYS <- 500
-
-N <- 1e4
-
-VALUES_AGE <- 1:4
-TABLE_AGE <- c(0.5,0.3,0.15,0.05)
-VALUES_SEX <- 1:2 # Deboost visit for 2, slight boost in spend for 2
-TABLE_SEX <- c(0.75, 0.25)
-
-# First visit date
-# If 0, boost, else spend decrease as first visit date increases
-
-VALUES_HOUSEHOLD_SIZE <- 1:7
-TABLE_HOUSEHOLD_SIZE <- c(0.3,0.25,0.175,0.10,0.085,0.065,0.025)
-# Spend and visit diminishes with household size
-
+source('R/parameters.R')
 
 
 ## Create users dimension table
 # Users created before start date
-P_OLD_USERS <- 0.5
 N_OLD_USERS <- floor(P_OLD_USERS*N)
 N_NEW_USERS <- N - N_OLD_USERS
 
@@ -43,18 +24,18 @@ N_NEW_USERS <- N - N_OLD_USERS
 
 set.seed(233)
 library(truncnorm)
-# library(e1071)
 library(EnvStats)
 
 shap <- 10
 loc <- 1000
 
 Y <- rpareto(N, loc, shap) # Location is mode, shap>>4
-mean(Y)
-hist(Y)
-kurtosis(Y)
+# mean(Y)
+# hist(Y)
+# kurtosis(Y)
 
-
+# First visit date: if 0 (old), boost visits and spend, 
+# else spend decrease as first visit date increases
 old_users_dimension_df <- tibble(
   user_id = 1:(N_OLD_USERS)
   # , purchase_amount = -1
@@ -66,7 +47,7 @@ old_users_dimension_df <- tibble(
   , daily_spend_mu_base = rpareto(N_OLD_USERS, loc, shap)*1.2
 )
 new_users_dimension_df <- tibble(
-  user_id = 1:(N_NEW_USERS)
+  user_id = (N_OLD_USERS+1):(N_NEW_USERS+N_OLD_USERS)
   # , purchase_amount = -1
   , age_group = gen_categorical(N_NEW_USERS, TABLE_AGE)
   , sex = gen_categorical(N_NEW_USERS, TABLE_SEX)
@@ -95,10 +76,7 @@ users_dimension_df <- users_dimension_df %>%
     (1-exp(-1/as.numeric(household_size)))
   ) %>% 
   mutate(daily_visit_p = daily_visit_p * 2./30. * 1/mean(daily_visit_p)
-         , daily_spend_mu = daily_spend_mu * 1000. * 1/mean(daily_spend_mu)) %>% 
-  mutate(daily_spend_mu = case_when(
-    
-  ))
+         , daily_spend_mu = daily_spend_mu * 1000. * 1/mean(daily_spend_mu))
 
 # TODO: Generate visits_fact_df
 # Time events, holidays: 
@@ -143,7 +121,7 @@ names(visits_fact_df) <- c("day", names(eligible_users))
 visits_fact_df <- visits_fact_df %>% 
   mutate(daily_spend_mu = case_when(
     (day >= 268 & day <= 276) ~ daily_spend_mu*1.5
-    , (day >= 450) & (first_visit_date >= 450) ~ daily_spend_mu*0.9
+    , (day >= 450) & (first_visit_date >= 450) ~ daily_spend_mu*SPEND_EFFECT_NEW_FEATURE
     , TRUE ~ daily_spend_mu
   ))
 
