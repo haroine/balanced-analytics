@@ -11,7 +11,7 @@ visits_fact_df <- visits_fact_df %>%
     , TRUE ~ 2
   ), month_visit = as.numeric(month(Date))
   , is_test_group = case_when(
-    first_visit_date >= 450 ~ 1
+    first_visit_date >= DATE_SHIP_NEW_FEATURE ~ 1
     , TRUE ~ 2
   )) %>% 
   mutate(low_traffic_holidays = case_when(

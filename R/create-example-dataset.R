@@ -83,7 +83,7 @@ users_dimension_df <- users_dimension_df %>%
 # 90-94 (July 4) - Visits DOWN all
 # 95-146 (Summer, age group 1) - Visits UP group 1
 # 268-276 (Winter holidays) - Visits UP group 1, DOWN rest, revenue UP all
-# 450-500 (Ship underperforming new feature) - revenue DOWN all
+# 450-500 (Ship underperforming new feature to new users) - revenue DOWN new users
 # 457-500 (Summer, age group 1) - Visits UP group 1
 # 461-464 (July 4) - Visits DOWN all
 library(foreach)
@@ -126,7 +126,7 @@ names(visits_fact_df) <- c("day", names(eligible_users))
 visits_fact_df <- visits_fact_df %>% 
   mutate(daily_spend_mu = case_when(
     (day >= 268 & day <= 276) ~ daily_spend_mu*1.5
-    , (day >= 450) & (first_visit_date >= 450) ~ daily_spend_mu*SPEND_EFFECT_NEW_FEATURE
+    , (day >= DATE_SHIP_NEW_FEATURE) & (first_visit_date >= DATE_SHIP_NEW_FEATURE) ~ daily_spend_mu*SPEND_EFFECT_NEW_FEATURE
     , TRUE ~ daily_spend_mu
   ))
 
