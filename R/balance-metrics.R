@@ -11,7 +11,7 @@ visits_fact_df <- visits_fact_df %>%
     , TRUE ~ 2
   ), month_visit = as.numeric(month(Date))
   , is_test_group = case_when(
-    first_visit_date >= DATE_SHIP_NEW_FEATURE ~ 1
+    first_visit_date >= 450 ~ 1
     , TRUE ~ 2
   )) %>% 
   mutate(low_traffic_holidays = case_when(
@@ -35,7 +35,7 @@ marginsMatrix <- newMarginMatrix() %>%
   addMargin("sex", TABLE_SEX) %>% 
   addMargin("first_visit_date_cal", c(P_OLD_USERS, 1-P_OLD_USERS)) %>% 
   addMargin("household_size", TABLE_HOUSEHOLD_SIZE) %>% 
-  addMargin("is_test_group", c(1/10,9/10)) %>%
+  # addMargin("is_test_group", c(1/10,9/10)) %>%
   addMargin("low_traffic_holidays", c(DAYS_LOW_TRAFFIC/N_DAYS, 1-DAYS_LOW_TRAFFIC/N_DAYS)) %>% 
   addMargin("high_traffic_holidays", c(DAYS_HIGH_TRAFFIC/N_DAYS, 1-DAYS_HIGH_TRAFFIC/N_DAYS))
 
