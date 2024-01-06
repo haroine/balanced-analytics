@@ -38,7 +38,7 @@ print(revenue_plot)
 # Trend: growth + revenue per users mechanically goes down bc newer users spend less
 # 
 
-#TODO: Metrics per age group to show why the main difference for the summer 
+#TODO: Plot metrics per age group to show why the main difference for the summer 
 
 #TODO : Is the effect visible in cohorts? (To be clear, not in retention since nothing is generated for
 # retention, but in revenue per user)

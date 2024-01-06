@@ -50,6 +50,7 @@ stats_per_day_weighted <- visits_fact_df %>%
   summarise(visits = sum(wCal), revenue = sum(daily_spend_mu*wCal)
             , revenue_per_user = sum(daily_spend_mu*wCal)/sum(wCal))
 
+saveRDS(visits_fact_df %>% select(day, Date, user_id, wCal), file="data/weights_balanced.rds")
 
 ##TODO Compute the effect
 
