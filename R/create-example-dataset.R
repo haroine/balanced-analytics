@@ -130,22 +130,4 @@ visits_fact_df$Date <- DATE_START + visits_fact_df$day - 1
 # saveRDS(visits_fact_df, file="data/visits_fact_df.rds")
 
 
-# Compute stats and plots to check properties
-stats_per_day <- visits_fact_df %>% 
-  group_by(day) %>% 
-  summarise(visits = n(), revenue = sum(daily_spend_mu), revenue_per_user = sum(daily_spend_mu)/n())
-
-stats_plot <- ggplot(data=stats_per_day, aes(x=day))+
-  geom_line(aes(y=visits), color="black") +
-  # geom_line(aes(y=revenue), color="blue") +
-  geom_line(aes(y=revenue_per_user), color="skyblue") +
-  NULL
-
-print(stats_plot)
-
-# Trend: growth + revenue per users mechanically goes down bc newer users spend less
-# 
-
-
-#TODO : Is the effect visible in cohorts???
 
