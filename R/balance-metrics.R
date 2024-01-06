@@ -44,13 +44,7 @@ visits_fact_df$weight1 <- 1
 visits_fact_df$wCal <- calibration(visits_fact_df, marginsMatrix, "weight1"
                                    , method="raking", popTotal = N_VISITS, pct=T)
 
-## Weighted Metrics
-stats_per_day_weighted <- visits_fact_df %>% 
-  group_by(Date) %>% 
-  summarise(visits = sum(wCal), revenue = sum(daily_spend_mu*wCal)
-            , revenue_per_user = sum(daily_spend_mu*wCal)/sum(wCal))
+# saveRDS(visits_fact_df %>% select(day, Date, user_id, wCal), file="data/weights_balanced.rds")
 
-saveRDS(visits_fact_df %>% select(day, Date, user_id, wCal), file="data/weights_balanced.rds")
 
-##TODO Compute the effect
 
