@@ -12,19 +12,6 @@ stats_per_day_weighted <- visits_fact_df %>%
   summarise(visits = sum(wCal), revenue = sum(daily_spend_mu*wCal)
             , revenue_per_user = sum(daily_spend_mu*wCal)/sum(wCal))
 
-# Compute effect
-if(COMPUTE_EFFECT) {
-  total_effect_revenue <- visits_fact_df %>%
-    # filter(day >= DATE_SHIP_NEW_FEATURE) %>%
-    group_by(day, Date) %>% 
-    summarise(revenue_with_effect = sum(daily_spend_mu*(1+effect)), revenue = sum(daily_spend_mu) ) %>% 
-    ungroup() %>% 
-    mutate(effect_computed = 1- 1/ (revenue_with_effect / revenue))
-  
-  mean(total_effect_revenue$effect_computed) # -0.18 ('zoomed'!)
-}
-
-
 
 # Plot weighted or non weighted
 # df_for_plot <- stats_per_day
