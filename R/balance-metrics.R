@@ -34,10 +34,10 @@ DAYS_HIGH_TRAFFIC <- length(unique((visits_fact_df %>% filter(high_traffic_holid
 DAYS_LOW_TRAFFIC <- length(unique((visits_fact_df %>% filter(low_traffic_holidays == 1))$day))
 
 marginsMatrix <- newMarginMatrix() %>% 
-  addMargin("age_group", TABLE_AGE) %>% 
-  addMargin("sex", TABLE_SEX) %>% 
-  addMargin("first_visit_date_cal", c(P_OLD_USERS, 1-DATE_SHIP_NEW_FEATURE / N_DAYS, -P_OLD_USERS+DATE_SHIP_NEW_FEATURE / N_DAYS)) %>% 
-  addMargin("household_size", TABLE_HOUSEHOLD_SIZE) %>% 
+  # addMargin("age_group", TABLE_AGE) %>% 
+  # addMargin("sex", TABLE_SEX) %>% 
+  # addMargin("first_visit_date_cal", c(P_OLD_USERS, 1-DATE_SHIP_NEW_FEATURE / N_DAYS, -P_OLD_USERS+DATE_SHIP_NEW_FEATURE / N_DAYS)) %>% 
+  # addMargin("household_size", TABLE_HOUSEHOLD_SIZE) %>% 
   # addMargin("is_test_group", c(1/10,9/10)) %>%
   addMargin("low_traffic_holidays", c(DAYS_LOW_TRAFFIC/N_DAYS, 1-DAYS_LOW_TRAFFIC/N_DAYS)) %>% 
   addMargin("high_traffic_holidays", c(DAYS_HIGH_TRAFFIC/N_DAYS, 1-DAYS_HIGH_TRAFFIC/N_DAYS)) %>% 

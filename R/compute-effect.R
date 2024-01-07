@@ -29,19 +29,28 @@ stats_per_day_weighted_BEFORE_prep <- stats_per_day_weighted_BEFORE_prep %>%
   mutate(diff_tilde = revenue - revenue_forecasted)
 ## TODO Plot forecast vs reality (?)
 
+
+##### Reconstruct total effect
+
 test <- visits_fact_df %>% 
   left_join(stats_per_day_weighted_BEFORE_prep, by=c('day', 'Date')) %>% 
   group_by(day, Date) %>%
   summarise(N_tilde_t = sum(wCal), Nt = n(), revenue_real_t = sum(daily_spend_mu)
-            , revenue_weighted_t = sum(daily_spend_mu*wCal))
+            , revenue_weighted_t = sum(daily_spend_mu*wCal)
+            , N_ratio = Nt / N_tilde_t
+            , N_ratio_inverse  = N_tilde_t / Nt)
 
 test2 <- stats_per_day_weighted_BEFORE_prep %>% 
   left_join(test, by=c('day', 'Date')) %>% 
-  mutate(diff_real = diff_tilde * N_tilde_t + revenue_real_t - N_tilde_t * revenue_weighted_t)
- 
+  mutate(effect_tilde = diff_tilde/revenue_weighted_t,
+         effect_real = effect_tilde*N_ratio)
 
+test2_POST <- test2 %>% 
+  filter(day >= DATE_SHIP_NEW_FEATURE)
 
-## Reconstruct total effect
+summary(test2_POST$effect_tilde)
+summary(test2_POST$effect_real)
+
 
 
 
