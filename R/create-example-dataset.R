@@ -123,10 +123,18 @@ visits_fact_df <- foreach(current_day = 1:N_DAYS, .combine = rbind) %do% {
 }
 names(visits_fact_df) <- c("day", names(eligible_users))
 
+## Affected profiles (spend)
+## Here the new features affects one age group and all new users
+visits_fact_df <- visits_fact_df %>% 
+  mutate(affected = case_when(
+    (day >= DATE_SHIP_NEW_FEATURE) & (first_visit_date >= DATE_SHIP_NEW_FEATURE) ~ 1
+    , (day >= DATE_SHIP_NEW_FEATURE) & (as.numeric(age_group) == 4) ~ 1
+    , TRUE ~ 0
+  ))
 visits_fact_df <- visits_fact_df %>% 
   mutate(daily_spend_mu = case_when(
     (day >= 268 & day <= 276) ~ daily_spend_mu*1.5
-    , (day >= DATE_SHIP_NEW_FEATURE) & (first_visit_date >= DATE_SHIP_NEW_FEATURE) ~ daily_spend_mu*SPEND_EFFECT_NEW_FEATURE
+    , affected == 1 ~ daily_spend_mu*SPEND_EFFECT_NEW_FEATURE
     , TRUE ~ daily_spend_mu
   ))
 
