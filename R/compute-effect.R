@@ -186,3 +186,5 @@ summary(
     select(effect)
 )
 
+#### TODO: Other method (for another article?) to compute effect:
+#### use margins that are the exact anticipated structured for the summer
